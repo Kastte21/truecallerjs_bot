@@ -60,6 +60,10 @@ Deno.serve(
             message =
               "Invalid phone number. \n\nMake sure number is in proper international format.";
             break;
+          case 401:
+            // During number search
+            message = "You are not authorized. \n\nTry /login first.";
+            break;
           case 40003:
             // During OTP request
             message =

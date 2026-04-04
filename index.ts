@@ -90,6 +90,10 @@ Deno.serve(
             message =
               "Truecaller service is down. Please try again a bit later.";
             break;
+          case 504:
+            message =
+              "Truecaller did not respond in time. Please try again later.";
+            break;
         }
       }
 

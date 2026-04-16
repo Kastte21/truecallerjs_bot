@@ -64,6 +64,12 @@ Deno.serve(
             // During number search
             message = "You are not authorized. \n\nTry /login first.";
             break;
+          case 40110:
+          case 42601:
+            // During number search (account/token expired/invalid)
+            message =
+              "Truecaller authorization failed.\n\nYour session/token is invalid or expired. Try /logout and then /login again.\nIf OTP login doesn't work, use /installation_id with a fresh token.";
+            break;
           case 40003:
             // During OTP request
             message =

@@ -130,9 +130,22 @@ Deno.serve(
 
     sendTypingIndicator();
 
-    const kv: Deno.Kv = await Deno.openKv();
-
     const chatIdKey: [string, number] = ["users", tgChatId];
+
+    if ((message.text as BotCommand) === "/start") {
+      return sendTgMessage(
+        "You need to /login to Truecaller with your existing non-EU account to use the bot.\nOnly you will be using your own account to search the numbers.",
+      );
+    }
+
+    let kv: Deno.Kv;
+    try {
+      kv = await Deno.openKv();
+    } catch (_error) {
+      return sendTgMessage(
+        "Service misconfigured: storage is unavailable.\n\nIf you are hosting this bot, enable Deno KV for this project and redeploy.",
+      );
+    }
 
     type KvValue =
       | { status: "awaiting_phone_no" }
@@ -153,15 +166,14 @@ Deno.serve(
       }
       | { status: "logged_out" };
 
-    const kvValue: KvValue = (await kv.get<KvValue>(chatIdKey)).value ?? {
-      status: "logged_out",
-    };
-
-    if ((message.text as BotCommand) === "/start") {
-      if (kvValue.status === "logged_out") reportEvent("/start");
-
+    let kvValue: KvValue;
+    try {
+      kvValue = (await kv.get<KvValue>(chatIdKey)).value ?? {
+        status: "logged_out",
+      };
+    } catch (_error) {
       return sendTgMessage(
-        "You need to /login to Truecaller with your existing non-EU account to use the bot.\nOnly you will be using your own account to search the numbers.",
+        "Service misconfigured: storage is unavailable.\n\nIf you are hosting this bot, enable Deno KV for this project and redeploy.",
       );
     }
 

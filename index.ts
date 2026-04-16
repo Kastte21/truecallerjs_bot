@@ -98,6 +98,7 @@ Deno.serve(
       }
 
       if (!message) {
+        console.error("Unhandled error:", error);
         message =
           "Internal server error!\nIt's been reported and will be fixed if possible.";
         reportErrorToSentry(error);
